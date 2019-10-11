@@ -23,7 +23,7 @@ This is a simple server that counts the number of unique emails provided to it, 
 
 You should receive a JSON-encoded response like the one below:
 
-```
+```json
 {
 	"numUniqueEmails": 2,
 	"uniqueEmails": [
