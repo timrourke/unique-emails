@@ -1,0 +1,6 @@
+*.log
+.idea
+.phpcs-cache
+.phpunit.result.cache
+test-results
+vendor

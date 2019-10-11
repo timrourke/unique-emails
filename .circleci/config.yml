@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: trourke/php-hot-lunch
+
+    working_directory: ~/unique-emails
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ .Branch }}-{{ checksum "composer.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-{{ .Branch }}-
+
+      - run:
+          name: 'Install Composer dependencies'
+          command: composer install -n --prefer-dist
+
+      - run:
+          name: 'Run PHPUnit tests'
+          command: composer test-coverage
+
+      - store_artifacts:
+          path: ./test-results
+          destination: phpunit
+
+      - store_test_results:
+          path: ./test-results
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "composer.json" }}
+
+      - run:
+          name: 'Lint PHP'
+          command: composer lint
+
+      - run:
+          name: 'Run psalm'
+          command: composer psalm
